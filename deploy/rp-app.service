@@ -1,0 +1,26 @@
+[Unit]
+Description=Resume Portal Flask App
+After=network.target
+ 
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/opt/rp-app
+Environment="RESUME_BUCKET=rp-resumes-femi"
+Environment="DB_SECRET_NAME=rp/db-credentials"
+Environment="SENDER_EMAIL=lawrenceodedina@gmail.com"
+Environment="AWS_DEFAULT_REGION=us-east-1"
+ExecStart=/opt/rp-app/venv/bin/gunicorn \
+    --bind 127.0.0.1:5000 \
+    --workers 2 \
+    --threads 2 \
+    --timeout 60 \
+    --access-logfile /var/log/rp-app-access.log \
+    --error-logfile /var/log/rp-app-error.log \
+    app:app
+Restart=always
+RestartSec=5
+ 
+[Install]
+WantedBy=multi-user.target
+
